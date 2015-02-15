@@ -43,10 +43,18 @@ final class RunHandler implements MessageHandler
         $this->console->setVersion($message->version);
 
         foreach ($this->actions as $index => $action) {
-            if ($action->getMatcher() instanceof Command) {
-                $this->console->add($action->getMatcher());
-                $action->getMatcher()->registerAction(function () use ($index) { $this->actions->handle($index); });
+            $matcher = $action->getMatcher();
+            if ($matcher instanceof Command == false) {
+                continue;
             }
+
+            /** @var Command $matcher */
+            $this->console->add($matcher);
+            $matcher->registerAction(
+                function () use ($index) {
+                    $this->actions->handle($index);
+                }
+            );
         }
 
         $this->console->run();

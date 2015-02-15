@@ -25,6 +25,13 @@ final class InvokeActionHandler implements MessageHandler
      */
     public function handle(Message $message)
     {
+        if ($message instanceof InvokeAction === false) {
+            throw new \InvalidArgumentException(
+                'The handler responsible for the Console\'s Run message expects a message of class Somos\InvokeAction, '
+                . 'an object of class "' . get_class($message) . '" was received'
+            );
+        }
+
         if ($message->action === null) {
             return;
         }
