@@ -71,6 +71,23 @@ final class Somos
     private $actions;
 
     /**
+     * A list of supported scopes for handlers and how to determine if this is the scope.
+     *
+     * Handlers in the message bus can be executed conditionally depending if we are in the right scope. This means that
+     * we can deal with, for example, CLI and Web handlers from the same kernel file.
+     *
+     * @var callable[]
+     */
+    private $scopes = [];
+
+    /**
+     * If no scope is specified when invoking a handler then this scope is used.
+     *
+     * @var string
+     */
+    private $defaultScope = 'web';
+
+    /**
      * Starts the kernel of the Somos Framework.
      *
      * This factory method uses the KernelFactory class to create a new instance of the Somos Framework ready to be used
@@ -99,6 +116,14 @@ final class Somos
     {
         $this->messagebus = $messagebus;
         $this->actions    = $actions;
+
+        // by default there are two scopes: cli for command line stuff and web for web-served content.
+        $this->scopes['cli'] = function () {
+            return php_sapi_name() === 'cli' || defined('STDIN');
+        };
+        $this->scopes['web'] = function () {
+            return php_sapi_name() !== 'cli' && ! defined('STDIN');
+        };
     }
 
     /**
@@ -142,6 +167,20 @@ final class Somos
     }
 
     /**
+     * Sets the default scope for handlers.
+     *
+     * @param string $scope
+     *
+     * @return $this
+     */
+    public function withDefaultScope($scope)
+    {
+        $this->defaultScope = $scope;
+
+        return $this;
+    }
+
+    /**
      * Handles a message that is passed to the Kernel.
      *
      * A message is an indication to the message bus that a specific command needs to be executed. An example of this
@@ -149,13 +188,60 @@ final class Somos
      * to be applied.
      *
      * @param Message $command
+     * @param string  $scope   A scope to which this handler belongs; may have multiple scopes separated by a comma. In
+     *     case of multiple scopes all scopes must match for the handler to trigger.
      *
      * @return $this
      */
-    public function handle(Message $command)
+    public function handle(Message $command, $scope = null)
     {
-        $this->messagebus->handle($command);
+        if ($this->isInScope($scope)) {
+            $this->messagebus->handle($command);
+        }
 
         return $this;
+    }
+
+    /**
+     * Adds additional scopes.
+     *
+     * Applications can add additional scopes so that they can decide to execute specific handlers according to the
+     * determined scope. This can be useful if, for example, you want to execute behaviour on a specific server (master)
+     * but not on the others. In this case you can add a new scope with a callable that detects if the app is installed
+     * on a specific server. And after adding the scope you can invoke handlers with just that scope.
+     *
+     * @param $name
+     * @param callable $matcher
+     * @return $this
+     */
+    public function addScope($name, callable $matcher)
+    {
+        $this->scopes[$name] = $matcher;
+
+        return $this;
+    }
+
+    /**
+     * Checks if the current environment matches all provided scopes.
+     *
+     * Multiple scopes may be passed separated by a comma. When multiple scopes are provided they must all match.
+     *
+     * @param string $scope
+     *
+     * @return boolean
+     */
+    private function isInScope($scope)
+    {
+        if ($scope === null) {
+            $scope = $this->defaultScope;
+        }
+
+        foreach (explode(',', $scope) as $specificScope) {
+            if (! $this->scopes[$specificScope]()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

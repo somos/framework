@@ -56,7 +56,7 @@ class SomosTest extends \PHPUnit_Framework_TestCase
         $message = $this->givenAnExampleMessage();
         $this->thenMessagebusHasMessage($this->messagebus, $message);
 
-        $result = $this->fixture->handle($message);
+        $result = $this->fixture->handle($message, 'cli');
 
         $this->assertSame($this->fixture, $result);
     }
