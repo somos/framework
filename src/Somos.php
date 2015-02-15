@@ -118,9 +118,25 @@ final class Somos
      *
      * @return $this
      */
-    public function add(Action $action)
+    public function with(Action $action)
     {
         $this->actions[] = $action;
+
+        return $this;
+    }
+
+    /**
+     * Registers another action with the kernel.
+     *
+     * @param Action $action
+     *
+     * @see self::with() for more information.
+     *
+     * @return $this
+     */
+    public function andWith(Action $action)
+    {
+        $this->with($action);
 
         return $this;
     }

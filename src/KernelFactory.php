@@ -2,6 +2,7 @@
 
 namespace Somos;
 
+use DI\Container;
 use DI\ContainerBuilder;
 use DI\Definition\Source\ArrayDefinitionSource;
 use DI\Definition\Source\DefinitionSource;
@@ -23,29 +24,22 @@ final class KernelFactory
     /**
      * @param $configuration
      * @param array $modules
-     * @return \DI\Container
+     * @return Container
      */
     private function createContainer($configuration, array $modules)
     {
         $builder = new ContainerBuilder();
-
-        $builder->addDefinitions(new ArrayDefinitionSource([
-            Actions::class => \Di\factory(function () {
-                return new Actions();
-            })
-        ]));
-
         $this->addModules($modules, $builder);
         $this->loadConfiguration($configuration, $builder);
-        $container = $builder->build();
-        return $container;
+
+        return $builder->build();
     }
 
     /**
      * @param $container
      * @return mixed
      */
-    private function getKernelFromContainer(\DI\Container $container)
+    private function getKernelFromContainer(Container $container)
     {
         return $container->get(Somos::class);
     }

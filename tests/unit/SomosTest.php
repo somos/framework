@@ -20,8 +20,8 @@ class SomosTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->actions    = $this->givenAnActionsCollection();
         $this->messagebus = $this->givenAMessageBus();
+        $this->actions    = $this->givenAnActionsCollection($this->messagebus);
         $this->fixture    = new Somos($this->messagebus, $this->actions);
     }
 
@@ -45,7 +45,7 @@ class SomosTest extends \PHPUnit_Framework_TestCase
     {
         $action = $this->givenAnExampleAction();
 
-        $result = $this->fixture->add($action);
+        $result = $this->fixture->with($action);
 
         $this->assertSame($action, $this->actions[0]);
         $this->assertSame($this->fixture, $result);
@@ -76,9 +76,9 @@ class SomosTest extends \PHPUnit_Framework_TestCase
      *
      * @return Actions
      */
-    private function givenAnActionsCollection()
+    private function givenAnActionsCollection($messagebus)
     {
-        return new Actions();
+        return new Actions($messagebus);
     }
 
     /**
@@ -89,7 +89,7 @@ class SomosTest extends \PHPUnit_Framework_TestCase
      */
     private function givenAnExampleAction()
     {
-        return Action::get('/');
+        return Action::matches('/');
     }
 
     /**

@@ -2,31 +2,35 @@
 
 namespace Somos;
 
-final class Action
+class Action
 {
     private $matcher = '';
 
-    private $callable = null;
+    private $handler = null;
 
     private $responder = null;
 
-    public function __construct($matcher, callable $callable = null)
+    public function __construct($matcher)
     {
         $this->matcher  = $matcher;
-        $this->callable = $callable;
     }
 
     /**
-     * @param $matcher
-     * @param callable|null $callable
+     * @param mixed $matcher
+     *
      * @return Action
      */
-    public static function get($matcher, callable $callable = null)
+    public static function matches($matcher)
     {
-        return new static($matcher, $callable);
+        return new static($matcher);
     }
 
-    public function respondWith(callable $callable)
+    public function uses($callable)
+    {
+        $this->handler = $callable;
+    }
+
+    public function responds($callable)
     {
         $this->responder = $callable;
 
@@ -38,20 +42,13 @@ final class Action
         return $this->matcher;
     }
 
-    public function handle()
+    public function getHandler()
     {
-        $actionResult = null;
-        if (is_callable($this->callable)) {
-            $actionResult = call_user_func_array($this->callable, func_get_args());
-        }
+        return $this->handler;
+    }
 
-        if (is_callable($this->responder)) {
-            $responderData = [];
-            if ($actionResult) {
-                $responderData = [$actionResult];
-            }
-
-            call_user_func_array($this->responder, $responderData);
-        }
+    public function getResponder()
+    {
+        return $this->responder;
     }
 }
