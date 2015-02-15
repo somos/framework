@@ -39,24 +39,52 @@ final class RunHandler implements MessageHandler
             );
         }
 
+        $this->setNameAndVersion($message);
+        $this->registerConsoleCommands();
+        $this->console->run();
+    }
+
+    /**
+     * @param Run $message
+     */
+    private function setNameAndVersion(Run $message)
+    {
         $this->console->setName($message->title);
         $this->console->setVersion($message->version);
+    }
 
+    private function registerConsoleCommands()
+    {
         foreach ($this->actions as $index => $action) {
-            $matcher = $action->getMatcher();
-            if ($matcher instanceof Command == false) {
+            if ($this->isConsoleCommand($action) === false) {
                 continue;
             }
 
-            /** @var Command $matcher */
-            $this->console->add($matcher);
-            $matcher->registerAction(
-                function () use ($index) {
-                    $this->actions->handle($index);
-                }
-            );
+            $this->registerCommandWithConsole($action->getMatcher(), $index);
         }
+    }
 
-        $this->console->run();
+    /**
+     * @param Action $action
+     * @return bool
+     */
+    private function isConsoleCommand(Action $action)
+    {
+        return $action->getMatcher() instanceof Command;
+    }
+
+    /**
+     * @param Command $command
+     * @param $index
+     */
+    private function registerCommandWithConsole(Command $command, $index)
+    {
+        $this->console->add($command);
+
+        $command->registerAction(
+            function () use ($index) {
+                $this->actions->handle($index);
+            }
+        );
     }
 }

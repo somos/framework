@@ -32,21 +32,39 @@ final class InvokeActionHandler implements MessageHandler
             );
         }
 
-        if ($message->action === null) {
+        $this->respond(
+            $message,
+            $message->action !== null ? $this->invoke($message) : null
+        );
+    }
+
+    /**
+     * @param InvokeAction $message
+     *
+     * @return mixed|null
+     */
+    private function invoke(InvokeAction $message)
+    {
+        return $message->action->getHandler() !== null
+            ? $this->container->call($message->action->getHandler(), $message->parameters)
+            : null;
+    }
+
+    /**
+     * @param InvokeAction $message
+     * @param mixed        $actionResult
+     *
+     * @return void
+     */
+    private function respond(InvokeAction $message, $actionResult)
+    {
+        if ($message->action->getResponder() === null) {
             return;
         }
 
-        $actionResult = $message->action->getHandler() !== null
-            ? $this->container->call($message->action->getHandler(), $message->parameters)
-            : null;
-
-        if ($message->action->getResponder() !== null) {
-            $responderData = [];
-            if ($actionResult) {
-                $responderData = ['data' => $actionResult];
-            }
-
-            $this->container->call($message->action->getResponder(), $responderData);
-        }
+        $this->container->call(
+            $message->action->getResponder(),
+            $actionResult ? ['data' => $actionResult] : []
+        );
     }
 }
