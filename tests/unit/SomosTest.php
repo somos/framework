@@ -74,6 +74,8 @@ class SomosTest extends \PHPUnit_Framework_TestCase
     /**
      * Returns a collection object for actions.
      *
+     * @param m\MockInterface $messagebus
+     *
      * @return Actions
      */
     private function givenAnActionsCollection($messagebus)
