@@ -48,7 +48,7 @@ Installation
 > to work towards. This framework is intended to be as simple and out-of-your-way as is possible and using those
 > examples I can challenge myself to work towards that goal.
 
-In the (examples repository)[http://github.com/somos/examples] you can find various ways to use Somos, ranging from a
+In the [examples repository](http://github.com/somos/examples) you can find various ways to use Somos, ranging from a
 Command Line application, a blog and a REST API. Anything is possible!
 
 The easiest way to use Somos is by installing it using composer and run the 'init' command to create a skeleton 
@@ -59,7 +59,7 @@ directory structure.
     
 > By default Somos will create a skeleton for a web application with all bells and whistles (such as Doctrine for ORM).
 > Somos is also capable of creating skeletons when you want to use it as a micro-framework or cli application; please
-> run `/vendor/bin/somos list init` to see a list of possibilities.
+> run `./vendor/bin/somos list init` to see a list of possibilities.
 
 Why another framework?
 ----------------------
