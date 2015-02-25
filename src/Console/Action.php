@@ -14,7 +14,7 @@ class Action extends SomosAction
      *
      * @return $this
      */
-    public static function matches($matcher)
+    public static function matching($matcher)
     {
         if (is_string($matcher) != true) {
             throw new \InvalidArgumentException(

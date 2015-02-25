@@ -20,12 +20,12 @@ class Action
      *
      * @return Action
      */
-    public static function matches($matcher)
+    public static function matching($matcher)
     {
         return new static($matcher);
     }
 
-    public function uses($callable)
+    public function using($callable)
     {
         $this->handler = $callable;
     }

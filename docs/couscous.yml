@@ -1,0 +1,19 @@
+template:
+    url: https://github.com/CouscousPHP/Template-ReadTheDocs.git
+title: Somos
+
+# The left menu bar
+menu:
+    items:
+        homepage:
+            text: About Somos
+            relativeUrl:
+        installation:
+            text: Installation
+            relativeUrl: installation.html
+        getting-started:
+            text: Getting Started
+            relativeUrl: getting-started.html
+        working-with-environments:
+            text: Working with Environments
+            relativeUrl: working-with-environments.html

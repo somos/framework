@@ -7,7 +7,7 @@ use SimpleBus\Message\Message;
 use Somos\Actions;
 use Symfony\Component\Console\Application;
 
-final class RunHandler implements MessageHandler
+final class GoHandler implements MessageHandler
 {
     /** @var Application */
     private $console;
@@ -32,7 +32,7 @@ final class RunHandler implements MessageHandler
      */
     public function handle(Message $message)
     {
-        if ($message instanceof Run === false) {
+        if ($message instanceof Go === false) {
             throw new \InvalidArgumentException(
                 'The handler responsible for the Console\'s Run message expects a message of class Somos\Console\Run, '
                 . 'an object of class "' . get_class($message) . '" was received'
@@ -47,7 +47,7 @@ final class RunHandler implements MessageHandler
     /**
      * @param Run $message
      */
-    private function setNameAndVersion(Run $message)
+    private function setNameAndVersion(Go $message)
     {
         $this->console->setName($message->title);
         $this->console->setVersion($message->version);
@@ -65,10 +65,10 @@ final class RunHandler implements MessageHandler
     }
 
     /**
-     * @param Action $action
+     * @param \Somos\Action $action
      * @return bool
      */
-    private function isConsoleCommand(Action $action)
+    private function isConsoleCommand(\Somos\Action $action)
     {
         return $action->getMatcher() instanceof Command;
     }

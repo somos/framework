@@ -1,26 +1,14 @@
 #!/usr/bin/env php
 <?php
 use Somos\Somos;
-use Somos\Console\Action;
+use Somos\Action;
 use Somos\Console\Command;
-use Somos\Console\Run;
+use Somos\Console\Go;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 require __DIR__ . '/../vendor/autoload.php';
 
 $somos = Somos::start()
     ->withDefaultScope('cli')
-    ->with(
-        Action::matches('init|init:fullstack')
-            ->describeAs('Initializes a new project using Somos as a full-stack web framework')
-            ->responds(
-                function (ConsoleOutput $output) {
-                    $output->writeln(
-                        'The initialize command has not been implemented yet as we are currently working on setting '
-                        . 'up this project, please see https://github.com/somos/framework/issues/24 for more '
-                        . 'information on this item.'
-                    );
-                }
-            )
-    )
-    ->handle(new Run());
+    ->with(Action::matching(new Command\Init('init')))
+    ->handle(new Go());

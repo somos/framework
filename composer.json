@@ -13,16 +13,24 @@
     "require": {
         "php":                    ">= 5.5.0",
         "mnapoli/php-di":         "~5.0@dev",
-        "simple-bus/message-bus": "~1.0",
-        "nikic/fast-route":       "0.3.*",
-        "phly/http":              "0.10.*",
-        "doctrine/orm":           "~2.4",
-        "symfony/console":        "~2.6"
+        "simple-bus/message-bus": "~1.0"
+    },
+    "suggests": {
+        "doctrine/dbal":    "For interacting with a database without the complexity of an ORM",
+        "doctrine/orm":     "For interacting with a database using an ORM",
+        "symfony/console":  "[Console] To run command line actions",
+        "nikic/fast-route": "[HTTP] To route web uris to actions",
+        "phly/http":        "[HTTP] To handle web requests"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.5",
+        "nikic/fast-route":          "0.3.*",
+        "phly/http":                 "0.10.*",
+        "doctrine/orm":              "~2.4",
+        "symfony/console":           "~2.6",
+
+        "phpunit/phpunit":           "~4.5",
         "squizlabs/php_codesniffer": "~2.2",
-        "mockery/mockery": "0.9.*"
+        "mockery/mockery":           "~0.9"
     },
     "bin": [ "bin/somos" ],
     "extra": {

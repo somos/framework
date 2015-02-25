@@ -4,7 +4,7 @@ namespace Somos\Console;
 
 use SimpleBus\Message\Message;
 
-final class Run implements Message
+final class Go implements Message
 {
     /** @var string */
     public $title;

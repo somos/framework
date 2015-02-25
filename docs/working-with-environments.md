@@ -1,6 +1,6 @@
 # Working with Environments
 
-Small-sized projects often do not have differences in the way the local development copy works versus a production 
+Small-sized projects often do not differ in the way the local development installation works versus a production 
 environment. As soon as your project starts to grow in size you will notice that it becomes convenient to have a
 master configuration and override specific parts for specific environments such as development, staging or production.
 
