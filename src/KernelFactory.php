@@ -4,7 +4,7 @@ namespace Somos;
 
 use DI\Container;
 use DI\ContainerBuilder;
-use DI\Definition\Source\ArrayDefinitionSource;
+use DI\Definition\Source\DefinitionArray;
 use DI\Definition\Source\DefinitionSource;
 
 final class KernelFactory
@@ -89,7 +89,7 @@ final class KernelFactory
         }
 
         if (is_array($configuration)) {
-            $configuration = new ArrayDefinitionSource($configuration);
+            $configuration = new DefinitionArray($configuration);
         }
 
         $builder->addDefinitions($configuration);

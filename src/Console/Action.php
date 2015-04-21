@@ -22,7 +22,7 @@ class Action extends SomosAction
             );
         }
 
-        return parent::matches(new Command($matcher));
+        return parent::matching(new Command($matcher));
     }
 
     public function describeAs($description)
