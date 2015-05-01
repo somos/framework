@@ -6,10 +6,8 @@ use Somos\Actions;
 use Somos\Http\Routing\Route;
 use Phly\Http\ServerRequest;
 use Somos\Http\Routing\Collection;
-use SimpleBus\Message\Handler\MessageHandler;
-use SimpleBus\Message\Message;
 
-final class GoHandler implements MessageHandler
+final class GoHandler
 {
     /** @var ServerRequest */
     private $request;
@@ -23,7 +21,7 @@ final class GoHandler implements MessageHandler
         $this->actions = $actions;
     }
 
-    public function handle(Message $message)
+    public function __invoke(Go $message)
     {
         $actions = $this->actions;
         $dispatcher = \FastRoute\simpleDispatcher(function (\FastRoute\RouteCollector $r) use ($actions) {

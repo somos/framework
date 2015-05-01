@@ -2,17 +2,17 @@
 
 namespace Somos;
 
-use SimpleBus\Message\Bus\Middleware\MessageBusSupportingMiddleware;
+use League\Tactician\CommandBus;
 
 final class Actions implements \ArrayAccess, \IteratorAggregate
 {
     /** @var Action[] */
     private $actions = [];
 
-    /** @var MessageBusSupportingMiddleware */
+    /** @var CommandBus */
     private $messageBus;
 
-    public function __construct(MessageBusSupportingMiddleware $messageBus)
+    public function __construct(Commandbus $messageBus)
     {
         $this->messageBus = $messageBus;
     }

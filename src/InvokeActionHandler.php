@@ -3,10 +3,8 @@
 namespace Somos;
 
 use DI\Container;
-use SimpleBus\Message\Handler\MessageHandler;
-use SimpleBus\Message\Message;
 
-final class InvokeActionHandler implements MessageHandler
+final class InvokeActionHandler
 {
     /** @var Container */
     private $container;
@@ -19,19 +17,12 @@ final class InvokeActionHandler implements MessageHandler
     /**
      * Handles the given message.
      *
-     * @param InvokeAction|Message $message
+     * @param InvokeAction $message
      *
      * @return void
      */
-    public function handle(Message $message)
+    public function __invoke(InvokeAction $message)
     {
-        if ($message instanceof InvokeAction === false) {
-            throw new \InvalidArgumentException(
-                'The handler responsible for the Console\'s Run message expects a message of class Somos\InvokeAction, '
-                . 'an object of class "' . get_class($message) . '" was received'
-            );
-        }
-
         $this->respond(
             $message,
             $message->action !== null ? $this->invoke($message) : null

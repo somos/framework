@@ -13,7 +13,7 @@
     "require": {
         "php":                    ">= 5.5.0",
         "mnapoli/php-di":         "~5.0@dev",
-        "simple-bus/message-bus": "~1.0"
+        "league/tactician":       "0.5.*"
     },
     "suggests": {
         "doctrine/dbal":    "For interacting with a database without the complexity of an ORM",

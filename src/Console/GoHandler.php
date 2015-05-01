@@ -2,12 +2,10 @@
 
 namespace Somos\Console;
 
-use SimpleBus\Message\Handler\MessageHandler;
-use SimpleBus\Message\Message;
 use Somos\Actions;
 use Symfony\Component\Console\Application;
 
-final class GoHandler implements MessageHandler
+final class GoHandler
 {
     /** @var Application */
     private $console;
@@ -24,28 +22,21 @@ final class GoHandler implements MessageHandler
     /**
      * Handles the given message.
      *
-     * @param Message|Run $message
+     * @param Go $message
      *
      * @throws \InvalidArgumentException if the given object is not of class Run.
      *
      * @return void
      */
-    public function handle(Message $message)
+    public function __invoke(Go $message)
     {
-        if ($message instanceof Go === false) {
-            throw new \InvalidArgumentException(
-                'The handler responsible for the Console\'s Run message expects a message of class Somos\Console\Run, '
-                . 'an object of class "' . get_class($message) . '" was received'
-            );
-        }
-
         $this->setNameAndVersion($message);
         $this->registerConsoleCommands();
         $this->console->run();
     }
 
     /**
-     * @param Run $message
+     * @param Go $message
      */
     private function setNameAndVersion(Go $message)
     {

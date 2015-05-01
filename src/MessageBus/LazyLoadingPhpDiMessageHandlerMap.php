@@ -4,10 +4,9 @@ namespace Somos\MessageBus;
 
 use Assert\Assertion;
 use DI\Container;
-use SimpleBus\Message\Handler\Map\Exception\NoHandlerForMessageName;
-use SimpleBus\Message\Handler\Map\MessageHandlerMap;
+use League\Tactician\Handler\Locator\HandlerLocator;
 
-final class LazyLoadingPhpDiMessageHandlerMap implements MessageHandlerMap
+final class LazyLoadingPhpDiMessageHandlerMap implements HandlerLocator
 {
     /** @var Container */
     private $container;
@@ -18,30 +17,33 @@ final class LazyLoadingPhpDiMessageHandlerMap implements MessageHandlerMap
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieves the handler for a specified command
+     *
+     * @param string $commandName
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return object
      */
-    public function handlerByMessageName($messageName)
+    public function getHandlerForCommand($commandName)
     {
-        if (class_exists($messageName) == false) {
+        if (class_exists($commandName) == false) {
             throw new \InvalidArgumentException(
-                'The provided message name should be an existing class, received "'. $messageName . '"'
+                'The provided message name should be an existing class, received "'. $commandName . '"'
             );
         }
 
-        $handlerClassName = $messageName . 'Handler';
+        $handlerClassName = $commandName . 'Handler';
         if (class_exists($handlerClassName) == false) {
-            throw new NoHandlerForMessageName($messageName);
+            throw new \InvalidArgumentException("No handler could be found for $commandName");
         }
 
         return $this->loadHandlerService($handlerClassName);
     }
 
+
     private function loadHandlerService($handlerClassName)
     {
-        $messageHandler = $this->container->get($handlerClassName);
-
-        Assertion::isInstanceOf($messageHandler, 'SimpleBus\Message\Handler\MessageHandler');
-
-        return $messageHandler;
+        return $this->container->get($handlerClassName);
     }
 }

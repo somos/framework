@@ -68,7 +68,7 @@ class SomosTest extends \PHPUnit_Framework_TestCase
      */
     private function givenAMessageBus()
     {
-        return m::mock('SimpleBus\Message\Bus\Middleware\MessageBusSupportingMiddleware');
+        return m::mock('League\Tactician\CommandBus');
     }
 
     /**
@@ -101,7 +101,7 @@ class SomosTest extends \PHPUnit_Framework_TestCase
      */
     private function givenAnExampleMessage()
     {
-        return m::mock('SimpleBus\Message\Message');
+        return m::mock('stdClass');
     }
 
     /**

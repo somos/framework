@@ -2,9 +2,7 @@
 
 namespace Somos\Console;
 
-use SimpleBus\Message\Message;
-
-final class Go implements Message
+final class Go
 {
     /** @var string */
     public $title;

@@ -3,14 +3,13 @@
 namespace Somos\Module;
 
 use Somos\Module as SomosModule;
-use SimpleBus\Message\Bus\Middleware\FinishesHandlingMessageBeforeHandlingNext;
-use SimpleBus\Message\Bus\Middleware\MessageBusSupportingMiddleware;
-use SimpleBus\Message\Handler\DelegatesToMessageHandlerMiddleware;
-use SimpleBus\Message\Handler\Map\MessageHandlerMap;
-use SimpleBus\Message\Handler\Resolver\MessageHandlerResolver;
-use SimpleBus\Message\Handler\Resolver\NameBasedMessageHandlerResolver;
-use SimpleBus\Message\Name\ClassBasedNameResolver;
-use SimpleBus\Message\Name\MessageNameResolver;
+use League\Tactician\CommandBus;
+use League\Tactician\Handler\CommandHandlerMiddleware;
+use League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor;
+use League\Tactician\Handler\CommandNameExtractor\CommandNameExtractor;
+use League\Tactician\Handler\Locator\HandlerLocator;
+use League\Tactician\Handler\MethodNameInflector\InvokeInflector;
+use League\Tactician\Handler\MethodNameInflector\MethodNameInflector;
 use Somos\MessageBus\LazyLoadingPhpDiMessageHandlerMap;
 
 final class MessageBus implements SomosModule
@@ -18,12 +17,14 @@ final class MessageBus implements SomosModule
     public function __invoke()
     {
         return [
-            MessageHandlerResolver::class => \DI\object(NameBasedMessageHandlerResolver::class),
-            MessageNameResolver::class => \DI\object(ClassBasedNameResolver::class),
-            MessageHandlerMap::class => \DI\object(LazyLoadingPhpDiMessageHandlerMap::class),
-            MessageBusSupportingMiddleware::class => \DI\object()
-                ->method('appendMiddleware', \DI\link(FinishesHandlingMessageBeforeHandlingNext::class))
-                ->method('appendMiddleware', \DI\link(DelegatesToMessageHandlerMiddleware::class)),
+            'command.middlewares' => [
+                \DI\link(CommandHandlerMiddleware::class)
+            ],
+
+            CommandBus::class           => \DI\object()->constructor(\DI\link('command.middlewares')),
+            CommandNameExtractor::class => \DI\object(ClassNameExtractor::class),
+            HandlerLocator::class       => \DI\object(LazyLoadingPhpDiMessageHandlerMap::class),
+            MethodNameInflector::class  => \DI\object(InvokeInflector::class),
         ];
     }
 }

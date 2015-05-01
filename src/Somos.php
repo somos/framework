@@ -1,9 +1,7 @@
 <?php
 
 namespace Somos;
-
-use SimpleBus\Message\Bus\Middleware\MessageBusSupportingMiddleware;
-use SimpleBus\Message\Message;
+use League\Tactician\CommandBus;
 
 /**
  * The kernel for the Somos framework.
@@ -29,7 +27,7 @@ use SimpleBus\Message\Message;
  *         `\Somos\Console\Command`.
  * Line 4. With command we provide the name with which we can invoke this command from the command line ('hello:world').
  * Line 5. We tell the Action that as soon as it is done it will echo 'Hello World!' on screen.
- * Line 7. The kernel is instructed to execute the Message `\Somos\Console\Run`; which will check if the command line
+ * Line 7. The kernel is instructed to execute the Command `\Somos\Console\Run`; which will check if the command line
  *         has been called with the 'hello:world' command and if so, it will execute the Action that we have provided
  *         earlier and respond with the given message ('Hello world').
  *
@@ -54,7 +52,7 @@ final class Somos
     /**
      * The message bus that deals with the commands that need to be executed by the kernel.
      *
-     * @var MessageBusSupportingMiddleware
+     * @var CommandBus
      */
     private $messagebus;
 
@@ -109,10 +107,10 @@ final class Somos
     /**
      * Injects the message bus and action listing into the Kernel.
      *
-     * @param MessageBusSupportingMiddleware $messagebus
-     * @param Actions $actions
+     * @param CommandBus $messagebus
+     * @param Actions    $actions
      */
-    public function __construct(MessageBusSupportingMiddleware $messagebus, Actions $actions)
+    public function __construct(CommandBus $messagebus, Actions $actions)
     {
         $this->messagebus = $messagebus;
         $this->actions    = $actions;
@@ -129,12 +127,12 @@ final class Somos
     /**
      * Registers an action with the kernel.
      *
-     * Actions are registered to the kernel so that {@see self::handle() Messages} can determine what business logic
+     * Actions are registered to the kernel so that {@see self::handle() Commands} can determine what business logic
      * to execute based on a given action.
      *
      * For example:
      *
-     *     An action may be a single page request where the route is embedded in the Action. The Message that deals
+     *     An action may be a single page request where the route is embedded in the Action. The Command that deals
      *     with HTTP requests and returning responses can iterate over the list of actions and if it encounters an
      *     action that matches the current URL it will execute its associated behaviour and hand the data from that
      *     action to a responder.
@@ -181,19 +179,19 @@ final class Somos
     }
 
     /**
-     * Handles a message that is passed to the Kernel.
+     * Handles a Command that is passed to the Kernel.
      *
-     * A message is an indication to the message bus that a specific command needs to be executed. An example of this
-     * is that via a message we can indicate that a HTTP request needs to be dealt with, or that authentication needs
+     * A Command is an indication to the command bus that a specific command needs to be executed. An example of this
+     * is that via a command we can indicate that a HTTP request needs to be dealt with, or that authentication needs
      * to be applied.
      *
-     * @param Message $command
-     * @param string  $scope   A scope to which this handler belongs; may have multiple scopes separated by a comma. In
+     * @param object $command
+     * @param string $scope   A scope to which this handler belongs; may have multiple scopes separated by a comma. In
      *     case of multiple scopes all scopes must match for the handler to trigger.
      *
      * @return $this
      */
-    public function handle(Message $command, $scope = null)
+    public function handle($command, $scope = null)
     {
         if ($this->isInScope($scope)) {
             $this->messagebus->handle($command);

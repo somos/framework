@@ -2,9 +2,7 @@
 
 namespace Somos\Http;
 
-use SimpleBus\Message\Message;
-
-final class Go implements Message
+final class Go
 {
 
 }

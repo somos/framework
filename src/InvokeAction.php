@@ -2,9 +2,7 @@
 
 namespace Somos;
 
-use SimpleBus\Message\Message;
-
-final class InvokeAction implements Message
+final class InvokeAction
 {
     /** @var Action */
     public $action;
